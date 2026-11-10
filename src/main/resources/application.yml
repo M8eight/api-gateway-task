@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  codec:
+    max-in-memory-size: 1000MB
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+      server:
+        webflux:
+          routes:
+            - id: flow-manager-route
+              uri: lb://flow-manager
+              predicates:
+                - Path=/flow/**
+              filters:
+                - StripPrefix=1
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.loadbalancer: TRACE
+    org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
+    reactor.netty.http.server.HttpServer: DEBUG
+    reactor.netty.http.client.HttpClient: DEBUG
