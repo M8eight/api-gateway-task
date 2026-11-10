@@ -6,6 +6,29 @@ spring:
     name: api-gateway
   codec:
     max-in-memory-size: 1000MB
+
+  security:
+    oauth2:
+      client:
+        provider:
+            keycloak:
+              issuer-uri: ${KC_PUBLIC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}
+              user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: gateway-client
+            client-secret: eOzXa2PnQgj41iFhFnzyWn6YNRy5WveO
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+      resourceserver:
+        jwt:
+          issuer-uri: ${KC_PUBLIC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}
+          jwk-set-uri: ${KC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}/protocol/openid-connect/certs
+
   cloud:
     gateway:
       discovery:
@@ -31,11 +54,3 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
     registry-fetch-interval-seconds: 5
-
-logging:
-  level:
-    org.springframework.cloud.gateway: TRACE
-    org.springframework.cloud.loadbalancer: TRACE
-    org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
-    reactor.netty.http.server.HttpServer: DEBUG
-    reactor.netty.http.client.HttpClient: DEBUG
