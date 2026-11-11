@@ -41,7 +41,8 @@ public class SecurityConfig {
 
                         .pathMatchers(
                                 "/public/**",
-                                "/actuator/**",
+                                "/actuator/health",
+                                "/actuator/health/**", // понадобится, если используете liveness/readiness пробы
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**"
                         ).permitAll()
