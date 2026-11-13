@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: api-gateway
-  codec:
-    max-in-memory-size: 1000MB
 
   security:
     oauth2:
@@ -18,7 +16,7 @@ spring:
           keycloak:
             provider: keycloak
             client-id: gateway-client
-            client-secret: eOzXa2PnQgj41iFhFnzyWn6YNRy5WveO
+            client-secret: ----
             authorization-grant-type: authorization_code
             scope:
               - openid
@@ -43,6 +41,9 @@ spring:
                 - Path=/flow/**
               filters:
                 - StripPrefix=1
+                - name: RequestSize
+                  args:
+                    size: 2GB
 
 
 eureka:

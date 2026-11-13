@@ -1,4 +1,4 @@
-package com.task.api_gateway.infrastructure.security;
+package com.task.api_gateway.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,9 +42,7 @@ public class SecurityConfig {
                         .pathMatchers(
                                 "/public/**",
                                 "/actuator/health",
-                                "/actuator/health/**", // понадобится, если используете liveness/readiness пробы
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**"
+                                "/actuator/health/**"
                         ).permitAll()
 
                         .pathMatchers(GET, "/flow/api/v1/files/*")
@@ -54,7 +52,7 @@ public class SecurityConfig {
                         .authenticated()
 
                         .pathMatchers(POST, "/flow/api/v1/files/upload")
-                        .permitAll()
+                        .authenticated()
 
                         .anyExchange().denyAll())
                 .oauth2Login(Customizer.withDefaults())
