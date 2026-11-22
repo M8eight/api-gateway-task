@@ -9,14 +9,17 @@ spring:
     oauth2:
       client:
         provider:
-            keycloak:
-              issuer-uri: ${KC_PUBLIC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}
-              user-name-attribute: preferred_username
+          keycloak:
+            authorization-uri: ${KC_PUBLIC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}/protocol/openid-connect/auth
+            token-uri: ${KC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}/protocol/openid-connect/token
+            jwk-set-uri: ${KC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}/protocol/openid-connect/certs
+            user-info-uri: ${KC_URL:http://localhost:9090}/realms/${KC_REALM:converter-realm}/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-id: gateway-client
-            client-secret: ----
+            client-secret: ${GATEWAY_CLIENT_SECRET}
             authorization-grant-type: authorization_code
             scope:
               - openid
@@ -44,16 +47,18 @@ spring:
                 - name: RequestSize
                   args:
                     size: 2GB
+                - name: RequestSize
+                  args:
+                    size: 2GB
 
 
 eureka:
   instance:
     prefer-ip-address: true
-    ip-address: 127.0.0.1
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${HOSTNAME:${server.port}}
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
     registry-fetch-interval-seconds: 5
     healthcheck:
       enabled: true
